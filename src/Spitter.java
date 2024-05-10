@@ -1,33 +1,18 @@
 public class Spitter {
 
-    private Long id;
+    // Variable to store the username of the Spitter
     private String username;
+
+    // Variable to store the password of the Spitter
     private String password;
+
+    // Variable to store the fullname of the Spitter
     private String fullName;
 
-    public Spitter(Long id, String username, String password, String fullName) {
-        this.id = id;
+    public Spitter(String username, String password, String fullName) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
-    }
-
-    @Override
-    public String toString() {
-        return "Spitter{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", fullName='" + fullName + '\'' +
-                '}';
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -54,4 +39,13 @@ public class Spitter {
         this.fullName = fullName;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Spitter{");
+        sb.append("username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", fullName='").append(fullName).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

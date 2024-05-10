@@ -1,38 +1,38 @@
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class Main {
+
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) {
 
         SpittrService spittrService = new SpittrService();
-        Spitter george = new Spitter(null, "geo", "geo123", "George Smith");
+        Spitter george = new Spitter("geo", "geo123", "George Smith");
         spittrService.createSpitter(george);
 
-        Date now = new Date();
-        long millis = System.currentTimeMillis();
-        Date dateFromMillis = new Date(millis);
-        Spittle post = new Spittle(0L, "Good morning people!!!", now, george);
+        Spittle post = new Spittle("Good morning people!!!", LocalDateTime.of(2024, 5, 9, 10, 30), george);
         spittrService.createSpittle(post);
 
-        Spittle post2 = new Spittle(0L, "Good night people!!!", now, george);
+        Spittle post2 = new Spittle("Good night people!!!", LocalDateTime.of(2024, 5, 9, 23, 23), george);
         spittrService.createSpittle(post2);
 
-        for (Spittle spittle : spittrService.findSpittlesBySpitter(george)) {
-            System.out.println(spittle);
+        for (Map.Entry<Integer, Spittle> entry : spittrService.findSpittlesBySpitter(george.getUsername()).entrySet()) {
+            logger.info(entry.getValue().getSpitter().getUsername() + " posted: " + entry.getValue().getMessage() + " Time posted: " + entry.getValue().getTimeSubmitted());
         }
 
-        System.out.println("------------------------------------------------------");
+        logger.info("------------------------------------------------------");
+        logger.info(george.getUsername() + " edited a post.");
 
-        /*for (Spittle spittle : spittrService.getSpittles()) {
-            System.out.println(spittle);
-        }*/
-        Spittle post3 = new Spittle(2L, "How are you doin all !!!", now, george);
-        spittrService.updateSpittle(post3);
+        Spittle post3 = new Spittle("Good night. Sweat dreams!!!", LocalDateTime.of(2024, 5, 9, 23, 40), george);
+        spittrService.updateSpittle(2, post3);
 
-        for (Spittle spittle : spittrService.findSpittlesBySpitter(george)) {
-            System.out.println(spittle);
+        for (Map.Entry<Integer, Spittle> entry : spittrService.findSpittlesBySpitter(george.getUsername()).entrySet()) {
+            logger.info(entry.getValue().getSpitter().getUsername() + " posted: " + entry.getValue().getMessage() + " Time posted: " + entry.getValue().getTimeSubmitted());
         }
 
 

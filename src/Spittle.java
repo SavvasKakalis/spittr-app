@@ -1,25 +1,20 @@
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Spittle {
 
-    private Long id;
+    // Variable to store the message/description of the Spittle (post)
     private String message;
-    private Date time;
+
+    // Variable to store the time that the Spittle was created
+    private LocalDateTime timeSubmitted;
+
+    // Variable to store the Spitter (creator) of the Spittle
     private Spitter spitter;
 
-    public Spittle(Long id, String message, Date time, Spitter spitter) {
-        this.id = id;
+    public Spittle(String message, LocalDateTime timeSubmitted, Spitter spitter) {
         this.message = message;
-        this.time = time;
+        this.timeSubmitted = timeSubmitted;
         this.spitter = spitter;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getMessage() {
@@ -30,12 +25,12 @@ public class Spittle {
         this.message = message;
     }
 
-    public Date getTime() {
-        return time;
+    public LocalDateTime getTimeSubmitted() {
+        return timeSubmitted;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setTime(LocalDateTime timeSubmitted) {
+        this.timeSubmitted = timeSubmitted;
     }
 
     public Spitter getSpitter() {
@@ -48,11 +43,11 @@ public class Spittle {
 
     @Override
     public String toString() {
-        return "Spittle{" +
-                "id=" + id +
-                ", message='" + message + '\'' +
-                ", time=" + time +
-                ", spitter=" + spitter +
-                '}';
+        final StringBuilder sb = new StringBuilder("Spittle{");
+        sb.append("message='").append(message).append('\'');
+        sb.append(", time=").append(timeSubmitted);
+        sb.append(", spitter=").append(spitter);
+        sb.append('}');
+        return sb.toString();
     }
 }
