@@ -1,27 +1,26 @@
-import java.sql.SQLException;
 import java.util.Map;
 
 public interface SpittrServiceDAO {
 
-    void createSpitter(Spitter spitter) throws SQLException;
+    void createSpitter(Spitter spitter);
 
-    Spitter findSpitterByUsername(String username) throws SQLException;
+    Spitter findSpitterByUsername(String username);
 
-    Map<Integer, Spitter> findAllSpitters() throws SQLException;
+    Map<Integer, Spitter> findAllSpitters();
 
-    void updateSpitter(Spitter spitter) throws SQLException;
+    void updateSpitter(Spitter spitter);
 
-    void deleteSpitter(String spitterUsername) throws SQLException;
+    void deleteSpitter(String spitterUsername);
 
-    void createSpittle(Spittle spittle) throws SQLException;
+    void createSpittle(Spittle spittle);
 
-    Spittle findSpittleByMessage(String message) throws SQLException;
+    Spittle findSpittleByMessage(String message);
 
-    Map<Integer, Spittle> findSpittlesBySpitter(String searchedUsername) throws SQLException;
+    Map<Integer, Spittle> findSpittlesBySpitter(String searchedUsername);
 
-    void updateSpittle(String message, Spittle spittle) throws SQLException;
+    void updateSpittle(String message, Spittle spittle);
 
-    void deleteSpittle(String message) throws SQLException;
+    void deleteSpittle(String message);
 
     Map<Integer, Spitter> getSpitters();
 

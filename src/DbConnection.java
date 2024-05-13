@@ -1,10 +1,15 @@
 import com.mysql.cj.jdbc.Driver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DbConnection {
+
+    private static final Logger logger = LoggerFactory.getLogger(DbConnection.class);
 
     public static final String URL = "jdbc:mysql://localhost:3306/spittrdb";
     public static final String USER = "root";
@@ -24,15 +29,15 @@ public class DbConnection {
         }
     }
 
-    /*public static void closeStatement(Statement st) {
+    public static void closeStatement(Statement st) {
         if (st != null) {
             try {
                 st.close();
             } catch (SQLException e) {
-                throw new DbException(e.getMessage());
+                logger.error("Failed to close PreparedStatement", e);
             }
         }
-    }*/
+    }
 
     public static void main(String[] args) {
         Connection connection = DbConnection.getConnection();
