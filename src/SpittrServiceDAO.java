@@ -21,12 +21,5 @@ public interface SpittrServiceDAO {
     void updateSpittle(String message, Spittle spittle);
 
     void deleteSpittle(String message);
-
-    Map<Integer, Spitter> getSpitters();
-
-    void setSpitters(Map<Integer, Spitter> spitters);
-
-    Map<Integer, Spittle> getSpittles();
-
-    void setSpittles(Map<Integer, Spittle> spittles);
+    
 }
