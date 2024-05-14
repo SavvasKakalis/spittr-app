@@ -1,21 +1,35 @@
+package main.java;
+
+import com.atomikos.icatch.jta.UserTransactionImp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class SpittrServiceImpl implements SpittrServiceDAO {
+public class SpittrServiceImpl implements main.java.SpittrServiceDAO {
+
+    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HibernateJPADemo");
+
+    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+    // Obtain UserTransaction instance from JTA implementation (e.g., Atomikos)
+    UserTransaction userTransaction = new UserTransactionImp();
 
     private static final Logger logger = LoggerFactory.getLogger(SpittrServiceImpl.class);
 
     // HashMap that keeps information about the Spitter objects
-    private Map<Integer, Spitter> spitters = new HashMap<>();
+    private Map<Integer, main.java.Spitter> spitters = new HashMap<>();
 
     // HashMap that keeps information about the Spittle objects
-    private Map<Integer, Spittle> spittles = new HashMap<>();
+    private Map<Integer, main.java.Spittle> spittles = new HashMap<>();
 
     // counter of "spitters" HashMap that is increased every time a Spitter is created
     private Integer spitterId = 1;
@@ -23,11 +37,12 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     // counter of "spittles" HashMap that is increased every time a Spittle is created
     private Integer spittleId = 1;
 
-    private final Connection connection = DbConnection.getConnection();
+    private final Connection connection = main.java.DbConnection.getConnection();
 
-    public void createSpitter(Spitter spitter) {
+
+    public void createSpitter(main.java.Spitter spitter) {
         //spitters.put(spitterId++, spitter);
-        PreparedStatement statement = null;
+        /*PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(
                     "INSERT INTO spitter  "
@@ -47,10 +62,29 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
 
         } finally {
             DbConnection.closeStatement(statement);
+        }*/
+        try {
+            userTransaction.begin();
+            entityManager.persist(spitter);
+            userTransaction.commit();
+        } catch (Exception e) {
+            rollbackTransaction(userTransaction);
+            // Log the exception or handle it appropriately
+        }
+
+    }
+
+    private void rollbackTransaction(UserTransaction userTransaction) {
+        try {
+            if (userTransaction != null && userTransaction.getStatus() == javax.transaction.Status.STATUS_ACTIVE) {
+                userTransaction.rollback();
+            }
+        } catch (Exception ex) {
+            // Log the rollback failure or handle it appropriately
         }
     }
 
-    public Spitter findSpitterByUsername(String username) {
+    public main.java.Spitter findSpitterByUsername(String username) {
         //return spitters.get(spitterId);
         PreparedStatement statement = null;
         try {
@@ -60,7 +94,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             statement.setString(1, username);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return new Spitter(rs.getString("username"), rs.getString("password"), rs.getString("fullname"));
+                    return new main.java.Spitter(rs.getString("username"), rs.getString("password"), rs.getString("fullname"));
                 }
             }
         } catch (SQLException e) {
@@ -68,14 +102,14 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to retrieve spitter from database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
         return null;
     }
 
-    public Map<Integer, Spitter> findAllSpitters() {
+    public Map<Integer, main.java.Spitter> findAllSpitters() {
         //return spitters;
-        Map<Integer, Spitter> spitters = new HashMap<>();
+        Map<Integer, main.java.Spitter> spitters = new HashMap<>();
         int spitterId = 0;
 
         PreparedStatement statement = null;
@@ -83,7 +117,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             statement = connection.prepareStatement("SELECT * FROM spitter");
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    spitters.put(spitterId++, new Spitter(rs.getString("username"), rs.getString("password"), rs.getString("fullname")));
+                    spitters.put(spitterId++, new main.java.Spitter(rs.getString("username"), rs.getString("password"), rs.getString("fullname")));
                 }
             }
         } catch (SQLException e) {
@@ -91,12 +125,12 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to retrieve all the spitters from database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
         return spitters;
     }
 
-    public void updateSpitter(Spitter spitter) {
+    public void updateSpitter(main.java.Spitter spitter) {
         //spitters.put(spitterId, spitter);
         PreparedStatement statement = null;
         try {
@@ -115,7 +149,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to update spitter in database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
     }
 
@@ -134,11 +168,11 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to delete spitter from database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
     }
 
-    public void createSpittle(Spittle spittle) {
+    public void createSpittle(main.java.Spittle spittle) {
         //spittles.put(spittleId++, spittle);
         PreparedStatement statement = null;
         try {
@@ -161,11 +195,11 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to insert spittle into database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
     }
 
-    public Spittle findSpittleByMessage(String message) {
+    public main.java.Spittle findSpittleByMessage(String message) {
         //return spittles.get(spittleId);
         PreparedStatement statement = null;
         try {
@@ -178,9 +212,9 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
                     Timestamp timestamp = rs.getTimestamp("datetime");
                     LocalDateTime localDateTime = timestamp.toLocalDateTime();
 
-                    Spitter spitter = findSpitterByUsername(rs.getString("spitter"));
+                    main.java.Spitter spitter = findSpitterByUsername(rs.getString("spitter"));
 
-                    return new Spittle(rs.getString("message"), localDateTime, spitter);
+                    return new main.java.Spittle(rs.getString("message"), localDateTime, spitter);
                 }
             }
         } catch (SQLException e) {
@@ -188,13 +222,13 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to retrieve spittle from database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
         return null;
     }
 
-    public Map<Integer, Spittle> findSpittlesBySpitter(String searchedUsername) {
-        Map<Integer, Spittle> spittlesBySpitter = new HashMap<>();
+    public Map<Integer, main.java.Spittle> findSpittlesBySpitter(String searchedUsername) {
+        Map<Integer, main.java.Spittle> spittlesBySpitter = new HashMap<>();
         int spittleId = 0;
 
         PreparedStatement statement = null;
@@ -207,9 +241,9 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
                     Timestamp timestamp = rs.getTimestamp("datetime");
                     LocalDateTime localDateTime = timestamp.toLocalDateTime();
 
-                    Spitter spitter = findSpitterByUsername(searchedUsername);
+                    main.java.Spitter spitter = findSpitterByUsername(searchedUsername);
 
-                    spittlesBySpitter.put(spittleId++, new Spittle(rs.getString("message"), localDateTime, spitter));
+                    spittlesBySpitter.put(spittleId++, new main.java.Spittle(rs.getString("message"), localDateTime, spitter));
                 }
             }
         } catch (SQLException e) {
@@ -217,12 +251,12 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to retrieve all spittle from database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
         return spittlesBySpitter;
     }
 
-    public void updateSpittle(String message, Spittle spittle) {
+    public void updateSpittle(String message, main.java.Spittle spittle) {
         //spittles.put(spittleId, spittle);
         PreparedStatement statement = null;
         try {
@@ -243,7 +277,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to update spittle in database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
     }
 
@@ -262,23 +296,23 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
             throw new RuntimeException("Failed to delete spittle from database", e);
 
         } finally {
-            DbConnection.closeStatement(statement);
+            main.java.DbConnection.closeStatement(statement);
         }
     }
 
-    public Map<Integer, Spitter> getSpitters() {
+    public Map<Integer, main.java.Spitter> getSpitters() {
         return spitters;
     }
 
-    public void setSpitters(Map<Integer, Spitter> spitters) {
+    public void setSpitters(Map<Integer, main.java.Spitter> spitters) {
         this.spitters = spitters;
     }
 
-    public Map<Integer, Spittle> getSpittles() {
+    public Map<Integer, main.java.Spittle> getSpittles() {
         return spittles;
     }
 
-    public void setSpittles(Map<Integer, Spittle> spittles) {
+    public void setSpittles(Map<Integer, main.java.Spittle> spittles) {
         this.spittles = spittles;
     }
 }

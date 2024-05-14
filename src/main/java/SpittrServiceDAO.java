@@ -1,3 +1,5 @@
+package main.java;
+
 import java.util.Map;
 
 public interface SpittrServiceDAO {
@@ -21,5 +23,5 @@ public interface SpittrServiceDAO {
     void updateSpittle(String message, Spittle spittle);
 
     void deleteSpittle(String message);
-    
+
 }

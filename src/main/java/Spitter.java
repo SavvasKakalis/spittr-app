@@ -1,12 +1,26 @@
+package main.java;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "spitter")
 public class Spitter {
 
+    /*@Column(name = "id")
+    private Long id;*/
+
     // Variable to store the username of the Spitter
+    @Column(name = "username")
     private String username;
 
     // Variable to store the password of the Spitter
+    @Column(name = "password")
     private String password;
 
     // Variable to store the fullname of the Spitter
+    @Column(name = "fullName")
     private String fullName;
 
     public Spitter(String username, String password, String fullName) {

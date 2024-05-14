@@ -1,7 +1,6 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+package main.java;
 
-
+import java.net.URL;
 import java.util.logging.Logger;
 
 public class Main {
@@ -9,12 +8,18 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
+        URL persistenceXmlUrl = Main.class.getClassLoader().getResource("META-INF/persistence.xml");
+        if (persistenceXmlUrl != null) {
+            System.out.println("Found persistence.xml at: " + persistenceXmlUrl);
+        } else {
+            System.out.println("Unable to find persistence.xml");
+        }
 
         SpittrServiceImpl spittrService = new SpittrServiceImpl();
         Spitter george = new Spitter("geo", "geo123", "George Smith");
 
         // insert a Spitter
-        //spittrService.createSpitter(george);
+        spittrService.createSpitter(george);
 
         // search for a Spitter by username
         //Spitter newSpitter = spittrService.findSpitterByUsername("geo");

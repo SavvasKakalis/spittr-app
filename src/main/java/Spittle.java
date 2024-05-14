@@ -1,11 +1,23 @@
+package main.java;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "spittle")
 public class Spittle {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
     // Variable to store the message/description of the Spittle (post)
+    @Column(name = "message")
     private String message;
 
     // Variable to store the time that the Spittle was created
+    @Column(name = "timeSubmitted")
     private LocalDateTime timeSubmitted;
 
     // Variable to store the Spitter (creator) of the Spittle
