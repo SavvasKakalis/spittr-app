@@ -1,5 +1,6 @@
 package main.java;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SpittrServiceDAO {
@@ -8,20 +9,20 @@ public interface SpittrServiceDAO {
 
     Spitter findSpitterByUsername(String username);
 
-    Map<Integer, Spitter> findAllSpitters();
+    List<Spitter> findAllSpitters();
 
     void updateSpitter(Spitter spitter);
 
-    void deleteSpitter(String spitterUsername);
+    void deleteSpitter(int spitterId);
 
     void createSpittle(Spittle spittle);
 
     Spittle findSpittleByMessage(String message);
 
-    Map<Integer, Spittle> findSpittlesBySpitter(String searchedUsername);
+    List<Spittle> findSpittlesBySpitter(String searchedUsername);
 
-    void updateSpittle(String message, Spittle spittle);
+    void updateSpittle(Spittle spittle);
 
-    void deleteSpittle(String message);
+    void deleteSpittle(int spittleId);
 
 }

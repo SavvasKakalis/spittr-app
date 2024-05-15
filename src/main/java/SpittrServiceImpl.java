@@ -1,318 +1,162 @@
 package main.java;
 
-import com.atomikos.icatch.jta.UserTransactionImp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.UserTransaction;
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+public class SpittrServiceImpl implements SpittrServiceDAO {
 
-
-public class SpittrServiceImpl implements main.java.SpittrServiceDAO {
-
-    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HibernateJPADemo");
-
-    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-    // Obtain UserTransaction instance from JTA implementation (e.g., Atomikos)
-    UserTransaction userTransaction = new UserTransactionImp();
-
-    private static final Logger logger = LoggerFactory.getLogger(SpittrServiceImpl.class);
-
-    // HashMap that keeps information about the Spitter objects
-    private Map<Integer, main.java.Spitter> spitters = new HashMap<>();
-
-    // HashMap that keeps information about the Spittle objects
-    private Map<Integer, main.java.Spittle> spittles = new HashMap<>();
-
-    // counter of "spitters" HashMap that is increased every time a Spitter is created
-    private Integer spitterId = 1;
-
-    // counter of "spittles" HashMap that is increased every time a Spittle is created
-    private Integer spittleId = 1;
-
-    private final Connection connection = main.java.DbConnection.getConnection();
-
-
-    public void createSpitter(main.java.Spitter spitter) {
-        //spitters.put(spitterId++, spitter);
-        /*PreparedStatement statement = null;
+    public void createSpitter(Spitter spitter) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
         try {
-            statement = connection.prepareStatement(
-                    "INSERT INTO spitter  "
-                            + "(username, password, fullname) "
-                            + "VALUES (?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
-
-            statement.setString(1, spitter.getUsername());
-            statement.setString(2, spitter.getPassword());
-            statement.setString(3, spitter.getFullName());
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to insert spitter into database", e);
-
-        } finally {
-            DbConnection.closeStatement(statement);
-        }*/
-        try {
-            userTransaction.begin();
-            entityManager.persist(spitter);
-            userTransaction.commit();
+            tx = session.beginTransaction();
+            session.save(spitter);
+            tx.commit();
         } catch (Exception e) {
-            rollbackTransaction(userTransaction);
-            // Log the exception or handle it appropriately
-        }
-
-    }
-
-    private void rollbackTransaction(UserTransaction userTransaction) {
-        try {
-            if (userTransaction != null && userTransaction.getStatus() == javax.transaction.Status.STATUS_ACTIVE) {
-                userTransaction.rollback();
-            }
-        } catch (Exception ex) {
-            // Log the rollback failure or handle it appropriately
-        }
-    }
-
-    public main.java.Spitter findSpitterByUsername(String username) {
-        //return spitters.get(spitterId);
-        PreparedStatement statement = null;
-        try {
-            statement = connection.prepareStatement("SELECT * FROM spitter WHERE username = ?",
-                    Statement.RETURN_GENERATED_KEYS);
-
-            statement.setString(1, username);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return new main.java.Spitter(rs.getString("username"), rs.getString("password"), rs.getString("fullname"));
-                }
-            }
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to retrieve spitter from database", e);
-
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
         }
-        return null;
     }
 
-    public Map<Integer, main.java.Spitter> findAllSpitters() {
-        //return spitters;
-        Map<Integer, main.java.Spitter> spitters = new HashMap<>();
-        int spitterId = 0;
-
-        PreparedStatement statement = null;
+    public Spitter findSpitterByUsername(String username) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Spitter spitter = null;
         try {
-            statement = connection.prepareStatement("SELECT * FROM spitter");
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    spitters.put(spitterId++, new main.java.Spitter(rs.getString("username"), rs.getString("password"), rs.getString("fullname")));
-                }
+            Query query = session.createQuery("from Spitter where username = :username");
+            query.setParameter("username", username);
+            List<Spitter> results = query.list();
+            if (!results.isEmpty()) {
+                spitter = results.get(0);
             }
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to retrieve all the spitters from database", e);
-
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
+        }
+        return spitter;
+    }
+
+    public List<Spitter> findAllSpitters() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Spitter> spitters = null;
+        try {
+            spitters = session.createQuery("from Spitter").list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
         return spitters;
     }
 
-    public void updateSpitter(main.java.Spitter spitter) {
-        //spitters.put(spitterId, spitter);
-        PreparedStatement statement = null;
+    public void updateSpitter(Spitter spitter) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
         try {
-            statement = connection.prepareStatement("UPDATE spitter SET username = ?, password = ?, fullname = ? WHERE username = ?",
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, spitter.getUsername());
-            statement.setString(2, spitter.getPassword());
-            statement.setString(3, spitter.getFullName());
-            statement.setString(4, spitter.getUsername());
-
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to update spitter in database", e);
-
+            tx = session.beginTransaction();
+            session.update(spitter);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
         }
     }
 
-    public void deleteSpitter(String spitterUsername) {
-        //spitters.remove(spitterId);
-        PreparedStatement statement = null;
+    public void deleteSpitter(int spitterId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
         try {
-            statement = connection.prepareStatement("DELETE FROM spitter WHERE username = ?",
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, spitterUsername);
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to delete spitter from database", e);
-
+            tx = session.beginTransaction();
+            Spitter spitter = (Spitter) session.load(Spitter.class, spitterId);
+            session.delete(spitter);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
         }
     }
 
-    public void createSpittle(main.java.Spittle spittle) {
-        //spittles.put(spittleId++, spittle);
-        PreparedStatement statement = null;
+    public void createSpittle(Spittle spittle) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
         try {
-            Timestamp timestamp = Timestamp.valueOf(spittle.getTimeSubmitted());
-
-            statement = connection.prepareStatement(
-                    "INSERT INTO spittle  "
-                            + "(message, datetime, spitter) "
-                            + "VALUES (?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
-
-            statement.setString(1, spittle.getMessage());
-            statement.setTimestamp(2, timestamp);
-            statement.setString(3, spittle.getSpitter().getUsername());
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to insert spittle into database", e);
-
+            tx = session.beginTransaction();
+            session.save(spittle);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
         }
+
     }
 
-    public main.java.Spittle findSpittleByMessage(String message) {
-        //return spittles.get(spittleId);
-        PreparedStatement statement = null;
+    public Spittle findSpittleByMessage(String message) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Spittle spittle = null;
         try {
-            statement = connection.prepareStatement("SELECT * FROM spittle WHERE message = ?",
-                    Statement.RETURN_GENERATED_KEYS);
-
-            statement.setString(1, message);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    Timestamp timestamp = rs.getTimestamp("datetime");
-                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-
-                    main.java.Spitter spitter = findSpitterByUsername(rs.getString("spitter"));
-
-                    return new main.java.Spittle(rs.getString("message"), localDateTime, spitter);
-                }
+            Query query = session.createQuery("from Spittle where message = :message");
+            query.setParameter("message", message);
+            List<Spittle> results = query.list();
+            if (!results.isEmpty()) {
+                spittle = results.get(0);
             }
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to retrieve spittle from database", e);
-
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
         }
-        return null;
+        return spittle;
     }
 
-    public Map<Integer, main.java.Spittle> findSpittlesBySpitter(String searchedUsername) {
-        Map<Integer, main.java.Spittle> spittlesBySpitter = new HashMap<>();
-        int spittleId = 0;
-
-        PreparedStatement statement = null;
+    public List<Spittle> findSpittlesBySpitter(String searchedUsername) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Spittle> spittles = null;
         try {
-            statement = connection.prepareStatement("SELECT * FROM spittle WHERE spitter = ?");
-
-            statement.setString(1, searchedUsername);
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    Timestamp timestamp = rs.getTimestamp("datetime");
-                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-
-                    main.java.Spitter spitter = findSpitterByUsername(searchedUsername);
-
-                    spittlesBySpitter.put(spittleId++, new main.java.Spittle(rs.getString("message"), localDateTime, spitter));
-                }
-            }
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to retrieve all spittle from database", e);
-
+            Query query = session.createQuery("from Spittle where spitter = :spitter");
+            query.setParameter("spitter", searchedUsername);
+            spittles = query.list();
         } finally {
-            main.java.DbConnection.closeStatement(statement);
+            session.close();
         }
-        return spittlesBySpitter;
-    }
-
-    public void updateSpittle(String message, main.java.Spittle spittle) {
-        //spittles.put(spittleId, spittle);
-        PreparedStatement statement = null;
-        try {
-            Timestamp timestamp = Timestamp.valueOf(spittle.getTimeSubmitted());
-
-            statement = connection.prepareStatement("UPDATE spittle SET message = ?, datetime = ?, spitter = ? WHERE message = ?",
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, spittle.getMessage());
-            statement.setTimestamp(2, timestamp);
-            statement.setString(3, spittle.getSpitter().getUsername());
-            statement.setString(4, message);
-
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to update spittle in database", e);
-
-        } finally {
-            main.java.DbConnection.closeStatement(statement);
-        }
-    }
-
-    public void deleteSpittle(String message) {
-        //spittles.remove(spittleId);
-        PreparedStatement statement = null;
-        try {
-            statement = connection.prepareStatement("DELETE FROM spittle WHERE message = ?",
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, message);
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error executing SQL", e);
-            throw new RuntimeException("Failed to delete spittle from database", e);
-
-        } finally {
-            main.java.DbConnection.closeStatement(statement);
-        }
-    }
-
-    public Map<Integer, main.java.Spitter> getSpitters() {
-        return spitters;
-    }
-
-    public void setSpitters(Map<Integer, main.java.Spitter> spitters) {
-        this.spitters = spitters;
-    }
-
-    public Map<Integer, main.java.Spittle> getSpittles() {
         return spittles;
     }
 
-    public void setSpittles(Map<Integer, main.java.Spittle> spittles) {
-        this.spittles = spittles;
+    public void updateSpittle(Spittle spittle) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.update(spittle);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public void deleteSpittle(int spittleId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Spittle spittle = (Spittle) session.load(Spittle.class, spittleId);
+            session.delete(spittle);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }
