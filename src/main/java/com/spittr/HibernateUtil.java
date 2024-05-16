@@ -1,4 +1,4 @@
-package main.java;
+package main.java.com.spittr;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;

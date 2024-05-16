@@ -1,4 +1,4 @@
-package main.java;
+package main.java.com.spittr;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -116,12 +116,12 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
         return spittle;
     }
 
-    public List<Spittle> findSpittlesBySpitter(String searchedUsername) {
+    public List<Spittle> findSpittlesBySpitter(int spitter_id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Spittle> spittles = null;
         try {
-            Query query = session.createQuery("from Spittle where spitter = :spitter");
-            query.setParameter("spitter", searchedUsername);
+            Query query = session.createQuery("from Spittle where spitter_id = :spitter_id");
+            query.setParameter("spitter_id", spitter_id);
             spittles = query.list();
         } finally {
             session.close();

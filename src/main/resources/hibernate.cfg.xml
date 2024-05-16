@@ -22,7 +22,7 @@
             Hibernate 4 automatically figure out Dialect from Database Connection Metadata -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
-        <mapping class="main.java.Spittle"/>
-        <mapping class="main.java.Spitter"/>
+        <mapping class="main.java.com.spittr.Spittle"/>
+        <mapping class="main.java.com.spittr.Spitter"/>
     </session-factory>
 </hibernate-configuration>

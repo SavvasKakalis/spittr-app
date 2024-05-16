@@ -1,4 +1,4 @@
-package main.java;
+package main.java.com.spittr;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -11,24 +11,22 @@ public class Spittle {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id")
     private int id;
 
     // Variable to store the message/description of the Spittle (post)
-    @Column(name="message")
     private String message;
 
     // Variable to store the time that the Spittle was created
     @Column(name="time_submitted", columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
     private Timestamp timeSubmitted;
 
-    // Variable to store the Spitter (creator) of the Spittl
-    @Column(name="spitter")
-    private String spitter;
+    @ManyToOne
+    @JoinColumn(name = "spitter_id")
+    private Spitter spitter;
 
     public Spittle(){}
 
-    public Spittle(int id, String message, Timestamp timeSubmitted, String spitter) {
+    public Spittle(int id, String message, Timestamp timeSubmitted, Spitter spitter) {
         this.id = id;
         this.message = message;
         this.timeSubmitted = timeSubmitted;
@@ -59,11 +57,11 @@ public class Spittle {
         this.timeSubmitted = timeSubmitted;
     }
 
-    public String getSpitter() {
+    public Spitter getSpitter() {
         return spitter;
     }
 
-    public void setSpitter(String spitter) {
+    public void setSpitter(Spitter spitter) {
         this.spitter = spitter;
     }
 

@@ -1,7 +1,6 @@
-package main.java;
+package main.java.com.spittr;
 
 import java.util.List;
-import java.util.Map;
 
 public interface SpittrServiceDAO {
 
@@ -19,7 +18,7 @@ public interface SpittrServiceDAO {
 
     Spittle findSpittleByMessage(String message);
 
-    List<Spittle> findSpittlesBySpitter(String searchedUsername);
+    List<Spittle> findSpittlesBySpitter(int spitterId);
 
     void updateSpittle(Spittle spittle);
 
