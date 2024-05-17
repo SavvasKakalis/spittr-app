@@ -1,5 +1,6 @@
-package main.java.com.spittr;
+package com.spittr.model;
 
+import com.spittr.model.SpittrServiceDAO;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

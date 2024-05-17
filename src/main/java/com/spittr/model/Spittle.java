@@ -1,9 +1,9 @@
-package main.java.com.spittr;
+package com.spittr.model;
+
+import com.spittr.model.Spitter;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name="spittle")

@@ -1,4 +1,4 @@
-package main.java.com.spittr;
+package com.spittr.model;
 
 import javax.persistence.*;
 import java.util.List;

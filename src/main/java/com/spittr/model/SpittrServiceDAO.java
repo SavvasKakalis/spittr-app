@@ -1,4 +1,6 @@
-package main.java.com.spittr;
+package com.spittr.model;
+
+import com.spittr.model.Spitter;
 
 import java.util.List;
 

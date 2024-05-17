@@ -79,7 +79,20 @@
             <artifactId>xml-apis</artifactId>
             <version>1.0.b2</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        </dependencies>
 
     <build>
         <plugins>
@@ -103,7 +116,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.spittr.src.main.java.com.spittr.Main</mainClass> <!-- Replace com.example.Main with your main class -->
+                    <mainClass>com.spittr.src.main.java.com.spittr.model.SpitterService</mainClass> <!-- Replace com.example.Main with your main class -->
                 </configuration>
             </plugin>
         </plugins>
