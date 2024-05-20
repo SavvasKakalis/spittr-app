@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JSR 340 Servlet 3.1, Final Release
+  ~
+  ~ License: https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee"
+           targetNamespace="http://xmlns.jcp.org/xml/ns/javaee"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="3.1">
+
+  <xs:annotation>
+    <xs:documentation>
+      JSR 340 Servlet 3.1
+      This is the XML Schema for the Servlet 3.1 Deployment
+      Descriptor.  It is a companion to the namespace
+      http://xmlns.jcp.org/xml/ns/javaee
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:element name="web-app" type="javaee:web-appType">
+    <xs:annotation>
+      <xs:documentation>
+        The web-app element is the root of the deployment
+        descriptor for a web application. Note that the
+        sub-elements of this element can be in the arbitrary order.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:complexType name="web-appType">
+    <xs:sequence>
+      <xs:element name="module-name" type="javaee:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            The module-name element specifies a name for the
+            web application module. This name is assigned by
+            the application assembler and must be unique
+            among web modules in a J2EE application.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <!-- Add other elements as needed, this is a large XSD file -->
+    </xs:sequence>
+    <xs:attribute name="version" type="javaee:web-app-versionType" use="required"/>
+    <xs:attribute name="metadata-complete" type="xs:boolean" use="optional"/>
+    <xs:attribute name="id" type="xs:ID" use="optional"/>
+  </xs:complexType>
+
+  <xs:simpleType name="web-app-versionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="3.1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

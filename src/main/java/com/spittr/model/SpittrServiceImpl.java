@@ -3,14 +3,19 @@ package com.spittr.model;
 import com.spittr.model.SpittrServiceDAO;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 
 public class SpittrServiceImpl implements SpittrServiceDAO {
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public void createSpitter(Spitter spitter) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = null;
+        Session session = sessionFactory.openSession();        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             session.save(spitter);
@@ -24,8 +29,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public Spitter findSpitterByUsername(String username) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Spitter spitter = null;
+        Session session = sessionFactory.openSession();        Spitter spitter = null;
         try {
             Query query = session.createQuery("from Spitter where username = :username");
             query.setParameter("username", username);
@@ -42,8 +46,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public List<Spitter> findAllSpitters() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Spitter> spitters = null;
+        Session session = sessionFactory.openSession();        List<Spitter> spitters = null;
         try {
             spitters = session.createQuery("from Spitter").list();
         } catch (Exception e) {
@@ -55,8 +58,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public void updateSpitter(Spitter spitter) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = null;
+        Session session = sessionFactory.openSession();        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             session.update(spitter);
@@ -70,8 +72,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public void deleteSpitter(int spitterId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = null;
+        Session session = sessionFactory.openSession();        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             Spitter spitter = (Spitter) session.load(Spitter.class, spitterId);
@@ -86,8 +87,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public void createSpittle(Spittle spittle) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = null;
+        Session session = sessionFactory.openSession();        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             session.save(spittle);
@@ -98,12 +98,10 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
         } finally {
             session.close();
         }
-
     }
 
     public Spittle findSpittleByMessage(String message) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Spittle spittle = null;
+        Session session = sessionFactory.openSession();        Spittle spittle = null;
         try {
             Query query = session.createQuery("from Spittle where message = :message");
             query.setParameter("message", message);
@@ -118,8 +116,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public List<Spittle> findSpittlesBySpitter(int spitter_id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Spittle> spittles = null;
+        Session session = sessionFactory.openSession();        List<Spittle> spittles = null;
         try {
             Query query = session.createQuery("from Spittle where spitter_id = :spitter_id");
             query.setParameter("spitter_id", spitter_id);
@@ -131,8 +128,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public void updateSpittle(Spittle spittle) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = null;
+        Session session = sessionFactory.openSession();        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             session.update(spittle);
@@ -146,7 +142,7 @@ public class SpittrServiceImpl implements SpittrServiceDAO {
     }
 
     public void deleteSpittle(int spittleId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();

@@ -1,12 +1,20 @@
-package com.spittr.model;
+package com.spittr.service;
 
+import com.spittr.model.Spitter;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
 
+@Service
 public class SpitterService {
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public List<Spitter> getSpitters() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         List<Spitter> spitters = null;
         try {
             spitters = session.createQuery("from Spitter").list();
@@ -16,21 +24,8 @@ public class SpitterService {
             session.close();
         }
         return spitters;
-        //return Arrays.asList(new Spitter(4, "geo", "geo7777777777",  "George Smith", null));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
     //main.java.com.spittr.model.Spitter george = new Spitter(4, "geo", "geo7777777777",  "George Smith", null);
 //Spittle newSpittle = new Spittle(1,"Good night people!!!", Timestamp.valueOf("2007-09-23 10:10:10.0"), george);
@@ -78,4 +73,3 @@ for (Spittle entry : spittles) {
 //spittrService.deleteSpittle(10);
 
 
-}

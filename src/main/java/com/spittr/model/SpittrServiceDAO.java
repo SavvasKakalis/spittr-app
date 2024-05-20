@@ -1,9 +1,11 @@
 package com.spittr.model;
 
 import com.spittr.model.Spitter;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface SpittrServiceDAO {
 
     void createSpitter(Spitter spitter);

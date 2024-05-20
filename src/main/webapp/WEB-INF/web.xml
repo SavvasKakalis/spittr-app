@@ -1,0 +1,57 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+             http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <!-- ContextLoaderListener to load the Spring Web application context -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Specify context parameters -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+
+    <!-- Define your servlets here -->
+    <servlet>
+        <servlet-name>SpittleServlet</servlet-name>
+        <servlet-class>com.spittr.controller.SpittleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SpittleServlet</servlet-name>
+        <url-pattern>/spittles</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SpitterServlet</servlet-name>
+        <servlet-class>com.spittr.controller.SpitterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SpitterServlet</servlet-name>
+        <url-pattern>/spitters</url-pattern>
+    </servlet-mapping>
+
+    <!-- Define JSP file location mapping -->
+    <servlet>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <init-param>
+            <param-name>fork</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xpoweredBy</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
+
+</web-app>
