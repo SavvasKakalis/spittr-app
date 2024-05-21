@@ -17,21 +17,13 @@
 
     <!-- Define your servlets here -->
     <servlet>
-        <servlet-name>SpittleServlet</servlet-name>
-        <servlet-class>com.spittr.controller.SpittleServlet</servlet-class>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>SpittleServlet</servlet-name>
-        <url-pattern>/spittles</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>SpitterServlet</servlet-name>
-        <servlet-class>com.spittr.controller.SpitterServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SpitterServlet</servlet-name>
-        <url-pattern>/spitters</url-pattern>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <!-- Define JSP file location mapping -->
