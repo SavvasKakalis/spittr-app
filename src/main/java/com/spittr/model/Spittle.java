@@ -1,7 +1,5 @@
 package com.spittr.model;
 
-import com.spittr.model.Spitter;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 

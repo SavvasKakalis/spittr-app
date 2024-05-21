@@ -1,6 +1,8 @@
 package com.spittr.service;
 
+import com.spittr.model.Spitter;
 import com.spittr.model.Spittle;
+import com.spittr.repository.SpittleRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +14,9 @@ import java.util.List;
 public class SpittleService {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private SpittleRepository spittleRepository;
 
-    public List<Spittle> getSpittles() {
-        Session session = sessionFactory.openSession();
-        List<Spittle> spittles = null;
-        try {
-            spittles = session.createQuery("from Spittle").list();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return spittles;
+    public List<Spittle> getAllSpittles() {
+        return spittleRepository.findAll();
     }
 }

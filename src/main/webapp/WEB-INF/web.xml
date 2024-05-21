@@ -4,15 +4,10 @@
              http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
-    <!-- ContextLoaderListener to load the Spring Web application context -->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
     <!-- Specify context parameters -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext.xml</param-value>
+        <param-value>com.spittr.config.AppConfig</param-value>
     </context-param>
 
     <!-- Define your servlets here -->
