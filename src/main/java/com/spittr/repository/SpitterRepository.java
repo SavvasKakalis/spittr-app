@@ -1,6 +1,7 @@
 package com.spittr.repository;
 
 import com.spittr.model.Spitter;
+import com.spittr.model.Spittle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
