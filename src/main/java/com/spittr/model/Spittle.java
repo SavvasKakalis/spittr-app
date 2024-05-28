@@ -1,5 +1,9 @@
 package com.spittr.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -19,8 +23,12 @@ public class Spittle {
     private Timestamp timeSubmitted;
 
     @ManyToOne
-    @JoinColumn(name = "spitter_id")
+    @JoinColumn(name = "spitter_id", insertable = false, updatable = false)
+    @JsonIgnore
     private Spitter spitter;
+
+    @Column(name = "spitter_id")
+    private int spitterId;
 
     public Spittle(){}
 
@@ -29,6 +37,7 @@ public class Spittle {
         this.message = message;
         this.timeSubmitted = timeSubmitted;
         this.spitter = spitter;
+        this.spitterId = spitter != null ? spitter.getId() : null;
     }
 
     public int getId() {
@@ -63,6 +72,15 @@ public class Spittle {
         this.spitter = spitter;
     }
 
+    @JsonProperty("spitter_id")
+    public int getSpitterId() {
+        return spitterId;
+    }
+
+    public void setSpitterId(int spitterId) {
+        this.spitterId = spitterId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Spittle{");
@@ -70,6 +88,7 @@ public class Spittle {
         sb.append(", message='").append(message).append('\'');
         sb.append(", timeSubmitted=").append(timeSubmitted);
         sb.append(", spitter=").append(spitter);
+        sb.append(", spitterId=").append(spitterId);
         sb.append('}');
         return sb.toString();
     }

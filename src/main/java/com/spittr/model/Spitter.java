@@ -1,5 +1,7 @@
 package com.spittr.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -18,9 +20,11 @@ public class Spitter {
     private String password;
 
     // Variable to store the fullname of the Spitter
+    @Column(name = "full_name")
     private String fullName;
 
-    @OneToMany(mappedBy = "spitter")
+    @OneToMany(mappedBy = "spitter", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Spittle> spittles;
 
     public Spitter() {}
