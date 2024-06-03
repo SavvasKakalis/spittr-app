@@ -2,7 +2,7 @@ package com.spittr.controller;
 
 import com.spittr.model.Spitter;
 import com.spittr.model.Spittle;
-import com.spittr.service.SpittrService;
+import com.spittr.service.SpittrServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class SpittrController {
 
     @Autowired
-    private SpittrService spittrService;
+    private SpittrServiceImpl spittrService;
 
 
     @GetMapping("/spitters")
