@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SpittrService {
@@ -21,9 +22,22 @@ public class SpittrService {
         return spitterRepository.findAll();
     }
 
+    public Optional<Spitter> getSpitterById(int id) {
+        return spitterRepository.findById(id);
+    }
+
+    public void saveSpitter(Spitter spitter) {
+        spitterRepository.save(spitter);
+    }
+
+    public void deleteSpitterById(int id) {
+        spitterRepository.deleteById(id);
+    }
+
     public List<Spittle> getAllSpittles(){
         return spittleRepository.findAll();
     }
+
 }
 
 
